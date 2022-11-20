@@ -1,11 +1,11 @@
-В первый запуск необходимо прописать
+<br>В первый запуск необходимо прописать
 
-cd docker
-sudo docker-compose up -d
-sudo docker exec -ti f-php bash
-  composer install
-  php artisan migrate
-  npm install
-  exit
+<br>cd docker
+<br>sudo docker-compose up -d
+<br>sudo docker exec -ti f-php bash
+  <br>composer install
+  <br>php artisan migrate
+  <br>npm install
+  <br>exit
 
-И можно открывать через: http://localhost:4001
+<br>И можно открывать через: http://localhost:4001

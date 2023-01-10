@@ -1,4 +1,4 @@
-<br>В первый запуск необходимо прописать
+<br>В первый запуск необходимо прописать:
 
 <br>cd docker
 <br>sudo docker-compose up -d
@@ -8,4 +8,9 @@
   <br>npm install
   <br>exit
 
-<br>И можно открывать через: http://localhost:4001
+<br>После можно открывать через: http://localhost:4001
+
+<br><br>Если надо все удалить и переустановить (других images и containers не нужны!):
+<br>cd docker
+<br>docker rmi -f $(docker images -aq)
+<br>sudo docker-compose build

@@ -16,11 +16,33 @@ RUN apt-get update && apt-get install -y \
 
 COPY ./app/php.ini /usr/local/etc/php/conf.d/php.ini
 
-# Install composer
-ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN curl -sS https://getcomposer.org/installer | php -- \
-    --filename=composer \
-    --install-dir=/usr/local/bin
+# node
+ENV NODE_VERSION=16.13.0
+RUN apt install -y curl
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
+RUN . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN node --version
+RUN npm --version
+
+# update npm to last version
+RUN npm i -g npm
+
+# yarn
+RUN apt-get update && apt-get install -y gnupg2
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install -y yarn
+
+# composer
+RUN curl -o /tmp/composer-setup.php https://getcomposer.org/installer \
+  && curl -o /tmp/composer-setup.sig https://composer.github.io/installer.sig \
+  && php -r "if (hash('SHA384', file_get_contents('/tmp/composer-setup.php')) !== trim(file_get_contents('/tmp/composer-setup.sig'))) { unlink('/tmp/composer-setup.php'); echo 'Invalid installer' . PHP_EOL; exit(1); }" \
+  && php /tmp/composer-setup.php --no-ansi --install-dir=/usr/local/bin --filename=composer --snapshot \
+  && rm -f /tmp/composer-setup.*
 
 WORKDIR /var/www
 
